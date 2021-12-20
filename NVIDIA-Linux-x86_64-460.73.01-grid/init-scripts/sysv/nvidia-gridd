@@ -1,0 +1,60 @@
+#!/bin/sh -e
+#
+# NVIDIA Grid Daemon Init Script
+#
+# Copyright (c) 2015 NVIDIA Corporation
+#
+# All rights reserved.  All information contained herein is proprietary and
+# confidential to NVIDIA Corporation.  Any use, reproduction, or disclosure
+# without the written permission of NVIDIA Corporation is prohibited.
+#
+# chkconfig: 2345 99 01
+# description: Starts and stops the NVIDIA Grid Daemon
+# processname: nvidia-gridd
+#
+### BEGIN INIT INFO
+# Provides:         nvidia-gridd
+# Required-Start:   $ALL
+# Required-Stop:    $ALL
+# Default-Start:    2 3 4 5
+# Default-Stop:     0 1 6
+# Description:      Starts and stops the NVIDIA Grid Daemon
+### END INIT INFO
+
+
+NVGD=nvidia-gridd
+NVGD_BIN=/usr/bin/${NVGD}
+NVGD_RUNTIME=/var/run/${NVGD}
+NVGD_PIDFILE=${NVGD_RUNTIME}/${NVGD}.pid
+export LD_LIBRARY_PATH=/usr/lib/nvidia/gridd
+
+if [ -f ${NVGD_PIDFILE} ]; then
+  read -r NVGD_PID < "${NVGD_PIDFILE}"
+  # Remove stale runtime files
+  if [ "${NVGD_PID}" ] && [ ! -d /proc/${NVGD_PID} ]; then
+    unset NVGD_PID
+    rm -rf "${NVGD_RUNTIME}"
+  fi
+fi
+
+case "${1}" in
+  start)
+      echo "Starting NVIDIA Grid Daemon"
+
+      # Execute the daemon
+      ${NVGD_BIN}
+      ;;
+  stop)
+      echo "Stopping NVIDIA Grid Daemon"
+
+      # Stop the daemon - its PID should have been read in
+      [ ! -z "${NVGD_PID}" ] && kill ${NVGD_PID} &> /dev/null
+      ;;
+  restart)
+      $0 stop
+      sleep 2
+      $0 start
+      ;;
+  *) echo "usage: $0 {start|stop|restart}"
+esac
+exit 0

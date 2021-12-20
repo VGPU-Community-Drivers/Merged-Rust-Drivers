@@ -1,0 +1,50 @@
+# /etc/nvidia/gridd.conf.template - Configuration file for vGPU Licensing Daemon
+
+# This is a template for the configuration file for vGPU Licensing Daemon.
+# For details on the file format, please refer to the nvidia-gridd(1)
+# man page.
+
+# Description: Set License Server Address
+# Data type: string
+# Format:  "<address>"
+ServerAddress=
+
+# Description: Set License Server port number
+# Data type: integer
+# Format:  <port>, default is 7070
+ServerPort=
+
+# Description: Set Backup License Server Address
+# Data type: string
+# Format:  "<address>"
+#BackupServerAddress=
+
+# Description: Set Backup License Server port number
+# Data type: integer
+# Format:  <port>, default is 7070
+#BackupServerPort=
+
+# Description: Set Feature to be enabled
+# Data type: integer
+# Possible values:
+#    0 => for unlicensed state
+#    1 => for NVIDIA vGPU
+#    2 => for NVIDIA RTX Virtual Workstation
+#    4 => for NVIDIA Virtual Compute Server
+# All other values reserved
+FeatureType=0
+
+# Description: Parameter to enable or disable vGPU Licensing tab in nvidia-settings
+# Data type: boolean
+# Possible values: TRUE or FALSE, default is FALSE
+#EnableUI=TRUE
+
+# Description: Set license borrow period in minutes
+# Data type: integer
+# Possible values: 10 to 10080 mins(7 days), default is 1440 mins(1 day)
+#LicenseInterval=1440
+
+# Description: Set license linger period in minutes
+# Data type: integer
+# Possible values: 0 to 10080 mins(7 days), default is 0 mins
+#LingerInterval=10

@@ -1,0 +1,106 @@
+#!/bin/sh
+#
+# NVIDIA Grid and vGPU Daemon Installer
+#
+# Copyright (c) 2015-2019 NVIDIA Corporation
+#
+# This is a installation script that attempts to create a UID for the
+# NVIDIA Grid and vGPU Daemon and install one of the included scripts,
+# which include:
+#
+#   + System V init (requires chkconfig found in PATH)
+#   + systemd (requires systemctl found in PATH)
+#   + Upstart (requires initctl found in PATH)
+#
+
+##############################################################################
+# main script
+##############################################################################
+
+# make sure we execute in the script directory
+cd $(dirname $0)
+
+# defaults
+install_path=""
+uninstall=0
+
+current_path=$(dirname $0)
+
+. $current_path/common.sh
+
+targets="systemd upstart sysv"
+
+supported=0
+target="unknown"
+for tgt in $targets; do
+    case "$tgt" in
+        systemd)
+            target="systemd service"
+            checkSystemd $install_path
+            [ "$systemd_supported" = "1" ] && { supported=1; break; }
+            ;;
+        upstart)
+            target="Upstart service"
+            checkUpstart $install_path
+            [ "$upstart_supported" = "1" ] && { supported=1; break; }
+            ;;
+        sysv)
+            target="SysV init script"
+            checkSysV $install_path
+            [ "$sysv_supported" = "1" ] && { supported=1; break; }
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+[ "$supported" = "1" ] || nvgdError "No supported init system found"
+
+# The last call to checkInstallPath that succeeded set the $potential_path
+# for the supported system.
+install_path=$potential_path
+
+# Parameters:
+# $1: Daemon name
+# $2: Start flag for daemon
+# $3 Install target for Daemon [One of "systemd", "upstart", "sysv"]
+run_install() {
+    nv_daemon_name="$1"
+    start_daemon="$2"
+    install_target="$3"
+
+    . $current_path/common.sh
+
+    # Run through the install steps now
+    nv_printf "\n"
+    nv_printf "Installation parameters:\n"
+    nv_printf "  $target installation path : $install_path\n"
+    nv_printf "\n"
+    case "$install_target" in
+        systemd)
+            installSystemdService $install_path $start_daemon
+            ;;
+        upstart)
+            installUpstartService $install_path $start_daemon
+            ;;
+        sysv)
+            installSysVScript $install_path $start_daemon
+            ;;
+        *)
+            nvgdError "Unknown installation target '$install_target'"
+            ;;
+    esac
+
+    printf "\n$nv_daemon_name $target successfully installed.\n"
+}
+
+IS_GRID=$(( 1 ))
+if [ "$IS_GRID" = "1" ]; then
+    run_install nvidia-gridd 1 $tgt
+fi
+
+
+
+#VGPU.RUN_SPECIFIC_CODE_START
+#VGPU.RUN_SPECIFIC_CODE_END

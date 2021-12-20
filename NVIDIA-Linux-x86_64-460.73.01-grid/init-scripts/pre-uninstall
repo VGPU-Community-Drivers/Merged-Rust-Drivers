@@ -1,0 +1,102 @@
+#!/bin/sh
+#
+# NVIDIA Grid and vGPU Daemon Installer
+#
+# Copyright (c) 2015 NVIDIA Corporation
+#
+# This is a installation script that attempts to create a UID for the
+# NVIDIA Grid and vGPU Daemon and install one of the included scripts,
+# which include:
+#
+#   + System V init (requires chkconfig found in PATH)
+#   + systemd (requires systemctl found in PATH)
+#   + Upstart (requires initctl found in PATH)
+#
+
+##############################################################################
+# main script
+##############################################################################
+
+# make sure we execute in the script directory
+cd $(dirname $0)
+
+# defaults
+install_path=""
+uninstall=1
+
+current_path=$(dirname $0)
+
+. $current_path/common.sh
+
+targets="systemd upstart sysv"
+
+supported=0
+target="unknown"
+for tgt in $targets; do
+    case "$tgt" in
+        systemd)
+            target="systemd service"
+            checkSystemd $install_path
+            [ "$systemd_supported" = "1" ] && { supported=1; break; }
+            ;;
+        upstart)
+            target="Upstart service"
+            checkUpstart $install_path
+            [ "$upstart_supported" = "1" ] && { supported=1; break; }
+            ;;
+        sysv)
+            target="SysV init script"
+            checkSysV $install_path
+            [ "$sysv_supported" = "1" ] && { supported=1; break; }
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+[ "$supported" = "1" ] || nvgdError "No supported init system found"
+
+# The last call to checkInstallPath that succeeded set the $potential_path
+# for the supported system.
+install_path=$potential_path
+
+# Parameters:
+# $1: Daemon name
+# $2 Uninstall target for Daemon [One of "systemd", "upstart", "sysv"]
+run_uninstall() {
+    nv_daemon_name="$1"
+    uninstall_target="$2"
+
+    . $current_path/common.sh
+
+    # Run through the uninstall steps now
+    nv_printf "\n"
+    nv_printf "Uninstallation parameters:\n"
+    nv_printf "  Path to remove $target from : $install_path\n"
+    nv_printf "\n"
+    case "$uninstall_target" in
+        systemd)
+            uninstallSystemdService $install_path
+            ;;
+        upstart)
+            uninstallUpstartService $install_path
+            ;;
+        sysv)
+            uninstallSysVScript $install_path
+            ;;
+        *)
+            nvgdError "Unknown uninstallation target '$uninstall_target'"
+            ;;
+    esac
+
+    printf "\n$nv_daemon_name $target successfully uninstalled.\n"
+}
+
+IS_GRID=$(( 1 ))
+if [ "$IS_GRID" = "1" ]; then
+    run_uninstall nvidia-gridd $tgt
+fi
+
+
+
