@@ -212,3 +212,4 @@ NV_CONFTEST_GENERIC_COMPILE_TESTS += get_user_pages_remote
 NV_CONFTEST_GENERIC_COMPILE_TESTS += pm_runtime_available
 NV_CONFTEST_GENERIC_COMPILE_TESTS += vm_fault_t
 NV_CONFTEST_GENERIC_COMPILE_TESTS += pci_class_multimedia_hd_audio
+ldflags-y += -T $(src)/nvidia/kern.ld

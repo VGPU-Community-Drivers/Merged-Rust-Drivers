@@ -93,6 +93,20 @@ run_uninstall() {
     printf "\n$nv_daemon_name $target successfully uninstalled.\n"
 }
 
+
+IS_VGX=$(( 1 || 1 ))
+if [ "$IS_VGX" = "1" ]; then
+    run_uninstall nvidia-vgpud $tgt
+#VGX_SRIOV_SPECIFIC_CODE_START
+    $current_path/sriov-manage -d ALL
+#VGX_SRIOV_SPECIFIC_CODE_END
+fi
+
+IS_KVM=$(( 1 ))
+if [ "$IS_KVM" = "1" ]; then
+    run_uninstall nvidia-vgpu-mgr $tgt
+fi
+
 IS_GRID=$(( 1 ))
 if [ "$IS_GRID" = "1" ]; then
     run_uninstall nvidia-gridd $tgt

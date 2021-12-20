@@ -1,11 +1,13 @@
 NVIDIA Accelerated Graphics Driver for Linux-x86_64
 460.73.01
  
-nvidia nvidia-uvm nvidia-modeset nvidia-drm 
+nvidia nvidia-uvm nvidia-modeset nvidia-drm nvidia-vgpu-vfio
  
  
 ./kernel/
 ./kernel/precompiled/
+kernel/patches/twelve.patch 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
+kernel/patches/fourteen.patch 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
 kernel/nvidia/nv-kernel.o_binary 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
 kernel/nvidia/nv.c 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
 kernel/nvidia/nv-pci.c 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
@@ -92,6 +94,7 @@ kernel/common/inc/os/nv_memory_type.h 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:
 kernel/Makefile 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
 kernel/Kbuild 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
 kernel/nvidia/nvidia.Kbuild 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
+kernel/nvidia/kern.ld 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
 kernel/dkms.conf 0644 DKMS_CONF INHERIT_PATH_DEPTH:1 MODULE:resman
 kernel/nvidia/nvidia-sources.Kbuild 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
 kernel/nvidia/nv-frontend.c 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
@@ -100,7 +103,9 @@ kernel/common/inc/nv-register-module.h 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH
 libnvidia-glcore.so.460.73.01 0755 OPENGL_LIB NATIVE MODULE:opengl
 libnvidia-tls.so.460.73.01 0755 TLS_LIB NATIVE / MODULE:opengl
 nvidia_icd.json 0644 VULKAN_ICD_JSON icd.d/ MODULE:opengl
+nvidia_icd.json 0644 EXPLICIT_PATH /usr/share/vulkan/icd.d MODULE:opengl
 nvidia_layers.json 0644 VULKAN_ICD_JSON implicit_layer.d/ MODULE:opengl
+nvidia_layers.json 0644 EXPLICIT_PATH /usr/share/vulkan/implicit_layer.d/ MODULE:opengl
 nvidia-application-profiles-460.73.01-rc 0444 APPLICATION_PROFILE / MODULE:opengl
 nvidia-application-profiles-460.73.01-key-documentation 0444 APPLICATION_PROFILE / MODULE:opengl
 libGLX_nvidia.so.460.73.01 0755 OPENGL_LIB NATIVE MODULE:opengl
@@ -128,7 +133,7 @@ libEGL.so 0000 EGL_CLIENT_SYMLINK NATIVE libEGL.so.1 MODULE:opengl
 libglxserver_nvidia.so.460.73.01 0755 GLX_MODULE_SHARED_LIB extensions MODULE:opengl
 libglxserver_nvidia.so 0000 GLX_MODULE_SYMLINK extensions/ libglxserver_nvidia.so.460.73.01 MODULE:opengl
 nvidia_drv.so 0755 XMODULE_SHARED_LIB drivers/ MODULE:xdriver
-nvidia-drm-outputclass.conf 0444 XORG_OUTPUTCLASS_CONFIG MODULE:xdriver
+10-nvidia-drm-outputclass.conf 0444 XORG_OUTPUTCLASS_CONFIG MODULE:xdriver
 nvidia-settings.png 0444 DOCUMENTATION NVIDIA_GLX-1.0/ MODULE:xutils
 nvidia-settings.desktop 0444 DOT_DESKTOP NVIDIA_GLX-1.0/ MODULE:xutils
 nvidia-xconfig 0755 UTILITY_BINARY MODULE:xutils
@@ -142,6 +147,7 @@ libnvidia-cfg.so.1 0000 UTILITY_LIB_SYMLINK NATIVE libnvidia-cfg.so.460.73.01 MO
 libnvidia-cfg.so 0000 UTILITY_LIB_SYMLINK NATIVE libnvidia-cfg.so.1 MODULE:xutils
 NVIDIA_Changelog 0444 DOCUMENTATION NVIDIA_GLX-1.0/ MODULE:installer
 LICENSE 0444 DOCUMENTATION NVIDIA_GLX-1.0/ MODULE:installer
+GRID_LICENSE 0444 DOCUMENTATION NVIDIA_GLX-1.0/ MODULE:installer
 nvidia-bug-report.sh 0755 UTILITY_BINARY MODULE:installer
 nvidia-installer.1.gz 0444 MANPAGE man1/ MODULE:installer
 nvidia-installer 0755 INSTALLER_BINARY MODULE:installer
@@ -160,9 +166,25 @@ libnvidia-ml.so.460.73.01 0755 CUDA_LIB NATIVE / MODULE:nvml
 libnvidia-ml.so.1 0000 CUDA_SYMLINK NATIVE / libnvidia-ml.so.460.73.01 MODULE:nvml
 libnvidia-ml.so 0000 CUDA_SYMLINK NATIVE / libnvidia-ml.so.1 MODULE:nvml
 nvidia-debugdump 0755 UTILITY_BINARY MODULE:nvml
+libnvidia-vgpu.so.460.73.02 0755 VGX_LIB NATIVE MODULE:vgpu
+libnvidia-vgpu.so 0000 VGX_LIB_SYMLINK libnvidia-vgpu.so.460.73.02 MODULE:vgpu
+libnvidia-vgxcfg.so.460.73.02 0755 VGX_LIB NATIVE MODULE:vgpu
+libnvidia-vgxcfg.so 0000 VGX_LIB_SYMLINK libnvidia-vgxcfg.so.460.73.02 MODULE:vgpu
 init-scripts/post-install 0755 EXPLICIT_PATH /usr/lib/nvidia MODULE:vgpu
+init-scripts/pre-unload 0755 EXPLICIT_PATH /usr/lib/nvidia MODULE:vgpu
 init-scripts/pre-uninstall 0755 EXPLICIT_PATH /usr/lib/nvidia MODULE:vgpu
 init-scripts/common.sh 0755 EXPLICIT_PATH /usr/lib/nvidia MODULE:vgpu
+sriov-manage 0755 EXPLICIT_PATH /usr/lib/nvidia MODULE:vgpu
+nvidia-vgpud 0755 UTILITY_BINARY MODULE:vgpu
+libvgpu_unlock_rs.so 0755 EXPLICIT_PATH /usr/lib/nvidia MODULE:vgpu
+vgpuConfig.xml 0444 EXPLICIT_PATH /usr/share/nvidia/vgpu MODULE:vgpu
+init-scripts/systemd/nvidia-vgpud.service 0444 EXPLICIT_PATH /usr/lib/nvidia/systemd MODULE:vgpu
+init-scripts/sysv/nvidia-vgpud 0755 EXPLICIT_PATH /usr/lib/nvidia/sysv MODULE:vgpu
+init-scripts/upstart/nvidia-vgpud.conf 0444 EXPLICIT_PATH /usr/lib/nvidia/upstart MODULE:vgpu
+nvidia-vgpu-mgr 0755 UTILITY_BINARY MODULE:vgpu
+init-scripts/systemd/nvidia-vgpu-mgr.service 0444 EXPLICIT_PATH /usr/lib/nvidia/systemd MODULE:vgpu
+init-scripts/sysv/nvidia-vgpu-mgr 0755 EXPLICIT_PATH /usr/lib/nvidia/sysv MODULE:vgpu
+init-scripts/upstart/nvidia-vgpu-mgr.conf 0444 EXPLICIT_PATH /usr/lib/nvidia/upstart MODULE:vgpu
 nvidia-gridd 0755 UTILITY_BINARY MODULE:vgpu
 gridd.conf.template 0444 EXPLICIT_PATH /etc/nvidia MODULE:vgpu
 nvidia-gridd.1.gz 0444 MANPAGE man1/ MODULE:vgpu
@@ -174,6 +196,7 @@ libFlxCore64.so 0000 FLEXERA_LIB_SYMLINK /nvidia/gridd libFlxCore64.so.2018.02 M
 libFlxComm64.so.2018.02 0755 FLEXERA_LIB /nvidia/gridd MODULE:vgpu
 libFlxComm64.so 0000 FLEXERA_LIB_SYMLINK /nvidia/gridd libFlxComm64.so.2018.02 MODULE:vgpu
 grid-third-party-licenses.txt 0444 EXPLICIT_PATH /usr/share/nvidia/ MODULE:vgpu
+LICENSE.vgpu_unlock-rs 0444 EXPLICIT_PATH /usr/share/nvidia MODULE:vgpu
 libvdpau_nvidia.so.460.73.01 0755 VDPAU_LIB NATIVE vdpau/ MODULE:vdpau
 libvdpau_nvidia.so.1 0000 VDPAU_SYMLINK NATIVE vdpau/ libvdpau_nvidia.so.460.73.01 MODULE:vdpau
 libvdpau_nvidia.so 0000 VDPAU_SYMLINK NATIVE / vdpau/libvdpau_nvidia.so.460.73.01 MODULE:vdpau
@@ -208,6 +231,18 @@ libnvidia-fbc.so 0000 UTILITY_LIB_SYMLINK NATIVE libnvidia-fbc.so.1 MODULE:nvfbc
 nvidia-persistenced-init.tar.bz2 0444 DOCUMENTATION NVIDIA_GLX-1.0/samples MODULE:nvpd
 nvidia-persistenced.1.gz 0444 MANPAGE man1/ MODULE:nvpd
 nvidia-persistenced 0755 UTILITY_BINARY MODULE:nvpd
+kernel/nvidia-vgpu-vfio/nvidia-vgpu-vfio.c 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:vgpu
+kernel/nvidia-vgpu-vfio/nvidia-vgpu-vfio.Kbuild 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:vgpu
+kernel/nvidia-vgpu-vfio/nvidia-vgpu-vfio.h 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:vgpu
+kernel/nvidia-vgpu-vfio/vgpu-devices.c 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:vgpu
+kernel/nvidia-vgpu-vfio/vgpu-devices.h 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:vgpu
+kernel/nvidia-vgpu-vfio/nv-vgpu-ioctl.h 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:vgpu
+kernel/nvidia-vgpu-vfio/nv-pci-table.c 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:vgpu
+kernel/nvidia-vgpu-vfio/nv-pci-table.h 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:vgpu
+kernel/nvidia-vgpu-vfio/nvidia-vgpu-vfio-sources.Kbuild 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:vgpu
+kernel/nvidia/nv-vgpu-vfio-interface.c 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:vgpu
+kernel/common/inc/nv-vgpu-vfio-interface.h 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:vgpu
+kernel/common/inc/vgpu_unlock_hooks.c 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:vgpu
 kernel/nvidia-uvm/uvm_common.c 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:uvm
 kernel/nvidia-uvm/uvm_linux.c 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:uvm
 kernel/nvidia-uvm/uvm_debug_optimized.c 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:uvm

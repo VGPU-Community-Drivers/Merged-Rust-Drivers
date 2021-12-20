@@ -95,6 +95,17 @@ run_install() {
     printf "\n$nv_daemon_name $target successfully installed.\n"
 }
 
+
+IS_VGX=$(( 1 || 1 ))
+if [ "$IS_VGX" = "1" ]; then
+    run_install nvidia-vgpud 0 $tgt
+fi
+
+IS_KVM=$(( 1 ))
+if [ "$IS_KVM" = "1" ]; then
+    run_install nvidia-vgpu-mgr 0 $tgt
+fi
+
 IS_GRID=$(( 1 ))
 if [ "$IS_GRID" = "1" ]; then
     run_install nvidia-gridd 1 $tgt

@@ -15,7 +15,7 @@
 #include "nv-frontend.h"
 
 #if defined(MODULE_LICENSE)
-MODULE_LICENSE("NVIDIA");
+MODULE_LICENSE("Dual MIT/GPL");
 #endif
 #if defined(MODULE_INFO)
 MODULE_INFO(supported, "external");

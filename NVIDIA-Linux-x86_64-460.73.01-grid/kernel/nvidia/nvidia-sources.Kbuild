@@ -32,3 +32,4 @@ NVIDIA_SOURCES += nvidia/nvlink_linux.c
 NVIDIA_SOURCES += nvidia/nvlink_caps.c
 NVIDIA_SOURCES += nvidia/linux_nvswitch.c
 NVIDIA_SOURCES += nvidia/procfs_nvswitch.c
+NVIDIA_SOURCES += nvidia/nv-vgpu-vfio-interface.c

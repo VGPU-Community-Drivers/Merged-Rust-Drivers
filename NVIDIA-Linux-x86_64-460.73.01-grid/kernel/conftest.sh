@@ -24,6 +24,7 @@ fi
 
 # VGX_BUILD parameter defined only for VGX builds (vGPU Host driver)
 # VGX_KVM_BUILD parameter defined only vGPU builds on KVM hypervisor
+VGX_KVM_BUILD=1
 # GRID_BUILD parameter defined only for GRID builds (GRID Guest driver)
 GRID_BUILD=1
 # GRID_BUILD_CSP parameter defined only for GRID CSP builds (GRID Guest driver for CSPs)

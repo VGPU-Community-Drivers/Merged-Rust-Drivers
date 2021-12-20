@@ -1,0 +1,61 @@
+#!/bin/sh -e
+#
+# Copyright 2015 by NVIDIA Corporation.
+#
+# All rights reserved.  All information contained herein is proprietary and
+# confidential to NVIDIA Corporation.  Any use, reproduction, or disclosure
+# without the written permission of NVIDIA Corporation is prohibited.
+#
+# chkconfig: 2345 99 01
+# description: Starts and stops the vGPU Daemon
+# processname: nvidia-vgpud
+#
+### BEGIN INIT INFO
+# Provides:         nvidia-vgpud
+# Required-Start:   $ALL
+# Required-Stop:    $ALL
+# Default-Start:    2 3 4 5
+# Default-Stop:     0 1 6
+# Description:      Starts and stops the NVIDIA vGPU Daemon
+### END INIT INFO
+
+NVVD=nvidia-vgpud
+NVVD_BIN=/usr/bin/${NVVD}
+NVVD_RUNTIME=/var/run/${NVVD}
+NVVD_PIDFILE=${NVVD_RUNTIME}/${NVVD}.pid
+NVVD_USER=__USER__
+
+export LD_PRELOAD=/usr/lib/nvidia/libvgpu_unlock_rs.so
+
+if [ -f ${NVVD_PIDFILE} ]; then
+  read -r NVVD_PID < "${NVVD_PIDFILE}"
+  # Remove stale runtime files
+  if [ "${NVVD_PID}" ] && [ ! -d /proc/${NVVD_PID} ]; then
+    unset NVVD_PID
+    rm -rf "${NVVD_RUNTIME}"
+  fi
+fi
+
+case "${1}" in
+  start)
+      nvidia-smi -pm 1 > /dev/null
+      echo "Starting NVIDIA vGPU Daemon"
+
+      # Execute the daemon as the intended user
+      ${NVVD_BIN} --user ${NVVD_USER}
+      ;;
+  stop)
+      echo "Stopping NVIDIA vGPU Daemon"
+
+      # Stop the daemon - its PID should have been read in
+      [ ! -z "${NVVD_PID}" ] && kill ${NVVD_PID} &> /dev/null
+      ;;
+  restart)
+      $0 stop
+      sleep 2
+      $0 start
+      ;;
+  *) echo "usage: $0 {start|stop|restart}"
+esac
+exit 0
+

@@ -12,10 +12,11 @@ Description=NVIDIA Grid Daemon
 Wants=syslog.target
 
 [Service]
-Environment="LD_LIBRARY_PATH=/usr/lib/nvidia/gridd"
 Type=forking
-ExecStart=/usr/bin/nvidia-gridd
+ExecStart=/usr/bin/vgpu_unlock /usr/bin/nvidia-gridd
 ExecStopPost=/bin/rm -rf /var/run/nvidia-gridd
+Environment="__RM_NO_VERSION_CHECK=1"
+Environment="LD_LIBRARY_PATH=/usr/lib/nvidia/gridd"
 
 [Install]
 WantedBy=multi-user.target

@@ -1,0 +1,22 @@
+# NVIDIA vGPU Daemon Init Script
+#
+# Copyright (c) 2015 NVIDIA Corporation
+#
+# All rights reserved.  All information contained herein is proprietary and
+# confidential to NVIDIA Corporation.  Any use, reproduction, or disclosure
+# without the written permission of NVIDIA Corporation is prohibited.
+#
+
+[Unit]
+Description=NVIDIA vGPU Daemon
+Wants=syslog.target
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/nvidia-vgpud
+ExecStopPost=/bin/rm -rf /var/run/nvidia-vgpud
+Environment=LD_PRELOAD=/usr/lib/nvidia/libvgpu_unlock_rs.so
+Environment=__RM_NO_VERSION_CHECK=1
+
+[Install]
+WantedBy=multi-user.target
