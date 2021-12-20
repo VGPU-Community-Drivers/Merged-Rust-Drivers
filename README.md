@@ -13,10 +13,10 @@ This is just a store to open it up and *open source our community changes*
 
 
 ## Thank you section
-- Origianl Crator of vGPU_unlock: [OG vgpu_unlock DualCoder](https://github.com/DualCoder/vgpu_unlock)
+- Original Crator of vGPU_unlock: [OG vgpu_unlock DualCoder](https://github.com/DualCoder/vgpu_unlock)
 - The creator of vGPU in Rust: [Mbilker Rust-Version](https://github.com/mbilker/vgpu_unlock-rs)
 - and the creator of the original merged driver: [NVIDIA-Linux-x86_64-460.73.01-grid-vgpu-kvm-v5](https://drive.google.com/file/d/1dCyUteA2MqJaemRKqqTu5oed5mINu9Bw/view)
-- and the "master patcher" (creator of the dkms patch): [vGPU for arch package nvidia-merged-arch](https://github.com/erin-allison/nvidia-merged-arch) 
+- and the "master patcheri00n" (creator of the dkms patch): [vGPU for arch package nvidia-merged-arch](https://github.com/erin-allison/nvidia-merged-arch) 
 
 ## More Information in:
 - [New Wiki](https://krutavshah.github.io/GPU_Virtualization-Wiki/)
