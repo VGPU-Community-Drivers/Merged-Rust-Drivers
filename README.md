@@ -1,4 +1,7 @@
 # Merged-Rust-Drivers
+This repository serves as a collection for community made tools that can unlock vGPU technology on consumer Nvidia GPUs.
+
+Note: I am not the creator of any of these scripts/tools, all credit goes to their original creator. (Should they wish to be credited)
 
 # DISCLAIMER #
 Driver is made from nvidia! For Business use Please Contact [Nvidia](https://www.nvidia.com/en-us/data-center/virtual-solutions/) or a Solutions provider: 
