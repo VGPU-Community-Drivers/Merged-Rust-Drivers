@@ -22,6 +22,13 @@ sudo ./NVIDIA-Linux-x86_64-460.73.01-grid-vgpu-kvm.run
 ```
 sudo pacman -S git-lfs || sudo apt install git-lfs
 git lfs clone https://github.com/VGPU-Community-Drivers/Merged-Rust-Drivers
+cd Merged-Rust-Drivers
+./repack.sh
+sudo ./NVIDIA-Linux-x86_64-460.73.01-grid-vgpu-kvm.run
+```
+update repo with:
+```
+git lfs pull && git pull
 ```
 
 ## More Information in:
