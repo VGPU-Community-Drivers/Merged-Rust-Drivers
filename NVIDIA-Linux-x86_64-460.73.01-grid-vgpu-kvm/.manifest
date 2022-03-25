@@ -8,6 +8,7 @@ nvidia nvidia-uvm nvidia-modeset nvidia-drm nvidia-vgpu-vfio
 ./kernel/precompiled/
 kernel/patches/twelve.patch 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
 kernel/patches/fourteen.patch 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
+kernel/patches/sixteen.patch 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
 kernel/nvidia/nv-kernel.o_binary 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
 kernel/nvidia/nv.c 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
 kernel/nvidia/nv-pci.c 0644 KERNEL_MODULE_SRC INHERIT_PATH_DEPTH:1 MODULE:resman
