@@ -1,6 +1,10 @@
 # Merged-Rust-Drivers
 This repository serves as a collection for community made tools that can unlock vGPU technology on consumer Nvidia GPUs.
 
+## Information
+Currently the vgpu discord/libvf.io is working on a 510 merged driver there is an aur solution working and usavle the run is still in progress
+More info in these discord servers.
+
 Note: I am not the creator of any of these scripts/tools, all credit goes to their original creator. (Should they wish to be credited)
 
 # DISCLAIMER #
